@@ -1,0 +1,14 @@
+sudo: false
+
+services:
+  - docker
+
+script:
+  - docker build -t nanoserverless/dockerest:$TRAVIS_BRANCH -f Dockerfile.build .
+  - id=$(docker create nanoserverless/dockerest:$TRAVIS_BRANCH)
+  - docker cp $id:/go/src/dockerest dockerest
+  - docker rm -f $id
+  - docker build -t nanoserverless/dockerest:$TRAVIS_BRANCH-light -f Dockerfile .
+  - echo "my@mail.com" | docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+  - docker push nanoserverless/dockerest:$TRAVIS_BRANCH-light
+  - docker push nanoserverless/dockerest:$TRAVIS_BRANCH

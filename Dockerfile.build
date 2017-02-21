@@ -1,0 +1,9 @@
+FROM      golang:1.7
+WORKDIR   /go/src
+ENV       CGO_ENABLED=0
+ENV       GO_PATH=/go/src
+RUN       go get github.com/gorilla/mux
+COPY      . /go/src
+RUN       go build -a --installsuffix cgo --ldflags=-s -o dockerest
+CMD       ["/go/src/dockerest"]
+EXPOSE    80
